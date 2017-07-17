@@ -1,0 +1,24 @@
+{
+  "name": "bamazon",
+  "version": "1.0.0",
+  "description": "A CLI app that simulates online shopping.",
+  "main": "bamazonCustomer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bdunams/Bamazon.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bdunams/Bamazon/issues"
+  },
+  "homepage": "https://github.com/bdunams/Bamazon#readme",
+  "dependencies": {
+    "bluebird": "^3.5.0",
+    "inquirer": "^3.2.0",
+    "mysql": "^2.13.0"
+  }
+}
