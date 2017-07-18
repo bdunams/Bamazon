@@ -1,3 +1,4 @@
+// Bamazon Customer
 // Require Bamazon DB Connection
 const Bamazon = require('./connections').Bamazon;
 // Require inquirer
