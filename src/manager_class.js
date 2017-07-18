@@ -1,32 +1,20 @@
-// Require Bamazon DB Connection
-const Bamazon = require('./connections').Bamazon;
+// Customer constructor
+const Customer = require('./customer_class');
 
-class Manager{
+// Store Manager Class
+// Can view all and low products, add inventory and new products
+// Inherits methods of Customer
+class Manager extends Customer{
   
-  constructor(){
-    
+  constructor(connection){
+    this.connection = connection;
   }
   
-  viewAllProducts(){
-    Bamazon.connectAsync().then(() =>{
-      // MySQL query for all from products table
-      Bamazon.queryAsync('SELECT * FROM products')
-      .then(data => {
-
-        data.forEach((product) =>{
-          console.log(
-            `${product.item_id} -- ${product.product_name} ---- ${product.price}`
-          );
-        })
-      })
-      .then(Bamazon.end());
-    })
-  }
-  
+  // Method to connect to DB and display products w/ quant. < 5 
   viewLowProducts(){
-    Bamazon.connectAsync().then(() =>{
+    this.connection.connectAsync().then(() =>{
       // MySQL query for all from products table
-      Bamazon.queryAsync('SELECT * FROM products WHERE stock_quantity < 5')
+      this.connection.queryAsync('SELECT * FROM products WHERE stock_quantity < 5')
       .then(data => {
 
         data.forEach((product) =>{
@@ -35,16 +23,18 @@ class Manager{
           );
         })
       })
-      .then(Bamazon.end());
+      .then(this.connection.end());
     })
   }
   
+  // Method to increase quantity of item in DB 
+  // Expects an object with choice of id and quantity
   addToInventory(userInput){
     // Get DB info of the item selected
-    Bamazon.queryAsync('SELECT * FROM products WHERE item_id = ?', [userInput.choice])
+    this.connection.queryAsync('SELECT * FROM products WHERE item_id = ?', [userInput.choice])
       .then(queryItem => {
         // UPDATE Inventory
-        Bamazon.queryAsync('UPDATE products SET stock_quantity = stock_quantity + ? WHERE item_id = ? LIMIT 1', [userInput.quantity, userInput.choice])
+        this.connection.queryAsync('UPDATE products SET stock_quantity = stock_quantity + ? WHERE item_id = ? LIMIT 1', [userInput.quantity, userInput.choice])
           .then(() => {
 
           let newTotal = parseInt(userInput.quantity) + queryItem[0].stock_quantity;
@@ -53,13 +43,15 @@ class Manager{
 
         })
       // Close DB connection
-      .then(Bamazon.end())
+      .then(this.connection.end())
     })
   }
   
+  // Method to add a new product to the DB
+  // Expects object with name, department, price and quantity properties
   newProduct(newProduct){
     // INSERT data into DB
-    Bamazon.queryAsync(
+    this.connection.queryAsync(
       'INSERT INTO products( product_name, department_name,price, stock_quantity)VALUES(?,?,?,?)', 
       [
         newProduct.name, 
@@ -71,7 +63,7 @@ class Manager{
         console.log('New product has been successfully added!')
     })
     // Close DB connection
-    .then(Bamazon.end())
+    .then(this.connection.end())
     // Handle error inserting data
     .catch((err) => console.log(err))
   }

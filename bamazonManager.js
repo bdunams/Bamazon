@@ -3,6 +3,8 @@
 const Bamazon = require('./connections').Bamazon;
 // Require inquirer
 const inquirer = require('inquirer');
+// Contains Manager Operations 
+const Manager = require('./src/manager_class');
 
 inquirer.prompt([
 	{
@@ -30,38 +32,18 @@ inquirer.prompt([
 	} 
 ]).then( (data) => {
   
+  // create new instance of Manager
+  let bamazonManager = new Manager(Bamazon);
+  
   switch(data.operations){
     // Display all products
     case 'view_all':
-      Bamazon.connectAsync().then(() =>{
-        // MySQL query for all from products table
-        Bamazon.queryAsync('SELECT * FROM products')
-        .then(data => {
-
-          data.forEach((product) =>{
-            console.log(
-              `${product.item_id} -- ${product.product_name} ---- ${product.price}`
-            );
-          })
-        })
-        .then(Bamazon.end());
-      })
+      bamazonManager.viewAllProducts();
     break;
-      
+    
+    // Display products with less than 5 in inventory
     case 'view_low':
-      Bamazon.connectAsync().then(() =>{
-        // MySQL query for all from products table
-        Bamazon.queryAsync('SELECT * FROM products WHERE stock_quantity < 5')
-        .then(data => {
-
-          data.forEach((product) =>{
-            console.log(
-              `${product.item_id} -- ${product.product_name} ---- ${product.price}`
-            );
-          })
-        })
-        .then(Bamazon.end());
-      })
+      bamazonManager.viewLowProducts();
     break;
       
     case 'more_inventory':
@@ -77,21 +59,7 @@ inquirer.prompt([
           message: 'And how may would you like?'
         }
       ]).then((userInput)=>{
-        // Get DB info of the item selected
-        Bamazon.queryAsync('SELECT * FROM products WHERE item_id = ?', [userInput.choice])
-          .then(queryItem => {
-            // UPDATE Inventory
-            Bamazon.queryAsync('UPDATE products SET stock_quantity = stock_quantity + ? WHERE item_id = ? LIMIT 1', [userInput.quantity, userInput.choice])
-              .then(() => {
-
-              let newTotal = parseInt(userInput.quantity) + queryItem[0].stock_quantity;
-
-              console.log(`\nInventory update was successful!\nNew inventory is ${newTotal}`);
-
-            })
-          // Close DB connection
-          .then(Bamazon.end())
-        })
+        bamazonManager.addToInventory(userInput);
       })
     break;
         
@@ -118,22 +86,7 @@ inquirer.prompt([
           message: 'Finally, how many will be for sale?'
         }
       ]).then((newProduct)=>{
-        // INSERT data into DB
-        Bamazon.queryAsync(
-          'INSERT INTO products( product_name, department_name,price, stock_quantity)VALUES(?,?,?,?)', 
-          [
-            newProduct.name, 
-            newProduct.department, 
-            parseInt(newProduct.price), 
-            parseInt(newProduct.quantity)
-          ])
-          .then(queryItem => {
-            console.log('New product has been successfully added!')
-        })
-        // Close DB connection
-        .then(Bamazon.end())
-        // Handle error inserting data
-        .catch((err) => console.log(err))
+        bamazonManager.newProduct(newProduct);
       })
     break;
   }
