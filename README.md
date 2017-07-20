@@ -11,4 +11,4 @@ Here is the customer CLI in action!
 
 Now, take a look at the options the manager CLI has to offer!
 
-![alt text](https://github.com/bdunams/Bamazon/blob/master/src/Manager.png)
+![alt text](https://github.com/bdunams/Bamazon/blob/master/src/Manager.PNG)
