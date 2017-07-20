@@ -8,11 +8,8 @@ class Customer{
   
   // Method to connect to DB and display all products
   viewAllProducts(){
-    
-    this.connection.connectAsync().then(() =>{
-      // MySQL query for all from products table
       
-      this.connection.queryAsync('SELECT * FROM products')
+      return this.connection.queryAsync('SELECT * FROM products')
       .then(data => {
 
         data.forEach((product) =>{
@@ -22,8 +19,13 @@ class Customer{
         })
         
       })
-      .then(this.connection.end());
-    })
+    .catch((err) => console.log(err));
+
+  }
+  
+  // Method to close DB connection 
+  closeConnection(){
+    this.connection.end()
   }
   
   // Method to get choice and quantity
@@ -38,6 +40,7 @@ class Customer{
       // if there isn't enough in stock, throw error
       if(queryItem[0].stock_quantity < userInput.quantity){
         throw 'Insufficient quantity';
+        this.connection.end();
         return;
       }
       
@@ -52,12 +55,13 @@ class Customer{
           console.log(`\nTransaction was successful!\n
             Your total is ${total}`);
           
-        })
+          // Close DB connection
+        }).then(this.connection.end())
+          .catch((err) => console.log(err));
       }
       
-      // Close DB connection
-    }).then(this.connection.end())
-    
+      
+    })
       // Handle error with getting DB info
       .catch((err) => console.log(err));
   }

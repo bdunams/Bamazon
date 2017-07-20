@@ -1,20 +1,16 @@
-// Customer constructor
-const Customer = require('./customer_class');
-
 // Store Manager Class
 // Can view all and low products, add inventory and new products
 // Inherits methods of Customer
-class Manager extends Customer{
+class Manager{
   
   constructor(connection){
     this.connection = connection;
   }
   
-  // Method to connect to DB and display products w/ quant. < 5 
-  viewLowProducts(){
-    this.connection.connectAsync().then(() =>{
-      // MySQL query for all from products table
-      this.connection.queryAsync('SELECT * FROM products WHERE stock_quantity < 5')
+  // Method to connect to DB and display all products
+  viewAllProducts(){
+      
+      return this.connection.queryAsync('SELECT * FROM products')
       .then(data => {
 
         data.forEach((product) =>{
@@ -22,9 +18,29 @@ class Manager extends Customer{
             `${product.item_id} -- ${product.product_name} ---- ${product.price}`
           );
         })
+        
       })
-      .then(this.connection.end());
-    })
+      .then(this.connection.end())
+      .catch((err) => console.log(err));
+
+  }
+  
+  // Method to connect to DB and display products w/ quant. < 5 
+  viewLowProducts(){
+
+      // MySQL query for all from products table
+      this.connection.queryAsync('SELECT * FROM products WHERE stock_quantity < 5')
+      .then(data => {
+
+        data.forEach((product) =>{
+          console.log(
+            `${product.item_id} -- ${product.product_name} ---- Stock at: ${product.stock_quantity}`
+          );
+        })
+      })
+      .then(this.connection.end())
+      .catch((err) => console.log(err));
+  
   }
   
   // Method to increase quantity of item in DB 
@@ -41,10 +57,11 @@ class Manager extends Customer{
 
           console.log(`\nInventory update was successful!\nNew inventory is ${newTotal}`);
 
-        })
-      // Close DB connection
-      .then(this.connection.end())
-    })
+        })// Close DB connection
+        .then(this.connection.end())
+        .catch((err) => console.log(err))
+      
+    }).catch((err) => console.log(err));
   }
   
   // Method to add a new product to the DB

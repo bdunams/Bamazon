@@ -56,7 +56,7 @@ inquirer.prompt([
         {
           type: 'input',
           name: 'quantity',
-          message: 'And how may would you like?'
+          message: 'And how many would you like to add?'
         }
       ]).then((userInput)=>{
         bamazonManager.addToInventory(userInput);
@@ -90,4 +90,4 @@ inquirer.prompt([
       })
     break;
   }
-});
+}).catch((err) => console.log(err));
