@@ -4,7 +4,7 @@ An Amazon-like storefront with the MySQL, the app takes in orders from customers
 
 Here is the customer CLI in action!
 
-![alt text](/src/Customer.png)
+![alt text](Bamazon/src/Customer.PNG)
 
 
 Now, take a look at the options the manager CLI has to offer!
