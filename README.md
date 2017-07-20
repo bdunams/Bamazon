@@ -4,11 +4,11 @@ An Amazon-like storefront with the MySQL, the app takes in orders from customers
 
 Here is the customer CLI in action!
 
-![alt text](https://raw.githubusercontent.com/bdunams/Bamazon/src/Customer.png)
+![alt text](https://github.com/bdunams/Bamazon/blob/master/src/Customer.PNG)
 
 
 
 
 Now, take a look at the options the manager CLI has to offer!
 
-![alt text](https://raw.githubusercontent.com/bdunams/Bamazon/src/Manager.png)
+![alt text](https://github.com/bdunams/Bamazon/blob/master/src/Manager.png)
